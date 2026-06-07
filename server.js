@@ -24,6 +24,13 @@ app.get("/api/info", (req, res) => {
   });
 });
 
+app.get("/api/version", (req, res) => {
+  res.json({
+    version: "1.0.1",
+    deployed_from: "git deploy flow",
+  });
+});
+
 app.listen(port, "127.0.0.1", () => {
   console.log(`Server running at http://127.0.0.1:${port}`);
 });
