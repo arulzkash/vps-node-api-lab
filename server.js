@@ -11,7 +11,7 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     app: "my-api",
-    message: "Backend is running on VPS",
+    message: "Backend is running from Git deploy flow",
   });
 });
 
