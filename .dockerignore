@@ -1,0 +1,6 @@
+node_modules
+.git
+.env
+.pm2
+logs
+*.log
