@@ -3,11 +3,8 @@
 set -e
 
 APP_DIR="/var/www/my-api"
-IMAGE_NAME="my-api"
-IMAGE_TAG="latest"
-CONTAINER_NAME="my-api-docker"
+SERVICE_NAME="api"
 HOST_PORT="3001"
-CONTAINER_PORT="3000"
 
 echo "==> Moving to app directory"
 cd "$APP_DIR"
@@ -15,24 +12,11 @@ cd "$APP_DIR"
 echo "==> Pulling latest code"
 git pull origin main
 
-echo "==> Building Docker image"
-docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
+echo "==> Building and starting containers with Docker Compose"
+docker compose up -d --build
 
-echo "==> Stopping old container if exists"
-docker stop "$CONTAINER_NAME" 2>/dev/null || true
-
-echo "==> Removing old container if exists"
-docker rm "$CONTAINER_NAME" 2>/dev/null || true
-
-echo "==> Starting new container"
-docker run -d \
-  --name "$CONTAINER_NAME" \
-  --restart unless-stopped \
-  -p 127.0.0.1:"$HOST_PORT":"$CONTAINER_PORT" \
-  "$IMAGE_NAME:$IMAGE_TAG"
-
-echo "==> Checking Docker container"
-docker ps --filter "name=$CONTAINER_NAME"
+echo "==> Checking Docker Compose services"
+docker compose ps
 
 echo "==> Checking backend through Docker local port"
 
@@ -48,8 +32,8 @@ for i in {1..10}; do
 
   if [ "$i" -eq 10 ]; then
     echo "Docker local health check failed after 10 attempts"
-    echo "==> Container logs:"
-    docker logs "$CONTAINER_NAME" --tail 50
+    echo "==> Compose logs:"
+    docker compose logs "$SERVICE_NAME" --tail 50
     exit 1
   fi
 done
@@ -72,8 +56,8 @@ for i in {1..10}; do
     echo "==> Nginx status:"
     sudo systemctl status nginx --no-pager
 
-    echo "==> Container logs:"
-    docker logs "$CONTAINER_NAME" --tail 50
+    echo "==> Compose logs:"
+    docker compose logs "$SERVICE_NAME" --tail 50
     exit 1
   fi
 done
