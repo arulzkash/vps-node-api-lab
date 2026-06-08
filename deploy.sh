@@ -4,7 +4,13 @@ set -e
 
 APP_DIR="/var/www/my-api"
 SERVICE_NAME="api"
-HOST_PORT="3001"
+if [ -f "$APP_DIR/.env" ]; then
+  set -a
+  source "$APP_DIR/.env"
+  set +a
+fi
+
+HOST_PORT="${HOST_PORT:-3001}"
 
 echo "==> Moving to app directory"
 cd "$APP_DIR"
