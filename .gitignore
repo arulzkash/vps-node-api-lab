@@ -3,3 +3,4 @@ node_modules
 .pm2
 logs
 *.log
+deploy.*.backup.sh
